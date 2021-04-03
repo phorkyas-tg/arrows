@@ -11,20 +11,20 @@ var LevelOne = new Phaser.Class({
         this.player = null;
         this.cursors = null;
         this.idle = true;
+        this.isBusy = false
     },
 
     preload: function() {
         this.load.spritesheet('hero', 'assets/sprites/4c_32_32_hero.png', { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet('laser', 'assets/sprites/4c_8_8_laser.png', { frameWidth: 8, frameHeight: 8 });
     },
 
     create: function() {
         // The player and its settings
         this.player = this.physics.add.sprite(50, 50, 'hero');
 
-        //  Player physics properties. Give the little guy a slight bounce.
         this.player.setCollideWorldBounds(true);
 
-        //  Our player animations, turning, walking left and walking right.
         this.anims.create({
             key: ANIM_IDLE,
             frames: this.anims.generateFrameNumbers('hero', { start: 0, end: 7 }),
@@ -39,10 +39,27 @@ var LevelOne = new Phaser.Class({
             repeat: 0,
         });
 
+        this.anims.create({
+            key: "laser-animation",
+            frames: this.anims.generateFrameNumbers('laser', { start: 0, end: 7 }),
+            frameRate: 10,
+            repeat: -1,
+        });
+
         this.player.on('animationcomplete', function(animation, frame) {
             if(animation.key === ANIM_SHOOT) {
-               this.idle = true;
+                this.idle = true;
+                this.isBusy = false
             }
+        }, this);
+
+        this.player.on('animationupdate', function(animation, frame) {
+          if(animation.key === ANIM_SHOOT && frame.index === 4) {
+              var laser = this.physics.add.sprite(this.player.x + 17, this.player.y - 2 , 'laser');
+              laser.setCollideWorldBounds(true);
+              laser.setVelocityX(100);
+              laser.anims.play("laser-animation");
+          }
         }, this);
 
         //  Input Events
@@ -50,20 +67,32 @@ var LevelOne = new Phaser.Class({
     },
 
     update: function() {
-        if (this.cursors.space.isDown)
+        if (!this.isBusy)
         {
-            this.idle = false
-            this.player.anims.play(ANIM_SHOOT);
-        }
-        else if (this.cursors.shift.isDown)
-        {
-            this.scene.start("EndScreen", {
-                "message": "Game Over"
-            });
-        }
-        if (this.idle)
-        {
-            this.player.anims.play(ANIM_IDLE, true);
+            if (this.cursors.space.isDown)
+            {
+                this.idle = false
+                this.isBusy = true
+                this.player.anims.play(ANIM_SHOOT);
+            }
+            else if (this.cursors.up.isDown)
+            {
+                this.player.y -= 2;
+            }
+            else if (this.cursors.down.isDown)
+                {
+                    this.player.y += 2;
+                }
+            else if (this.cursors.shift.isDown)
+            {
+                this.scene.start("EndScreen", {
+                    "message": "Game Over"
+                });
+            }
+            if (this.idle)
+            {
+                this.player.anims.play(ANIM_IDLE, true);
+            }
         }
     }
 });
@@ -102,8 +131,8 @@ var EndScreen = new Phaser.Class({
 
 var config = {
     type: Phaser.AUTO,
-    width: 400,
-    height: 200,
+    width: 256,
+    height: 244,
     backgroundColor: "#5DACD8",
     physics: {
         default: 'arcade',
