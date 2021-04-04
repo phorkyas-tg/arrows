@@ -9,6 +9,7 @@ class Level extends Phaser.Scene
         this.idle = true;
         this.isBusy = false
         this.lasers;
+        this.balls;
     }
 
     preload ()
@@ -27,6 +28,13 @@ class Level extends Phaser.Scene
 
         // create bullet groups
         this.lasers = new Lasers(this);
+        // create balls group
+        this.balls = new Balls(this)
+        this.balls.children.iterate(function (ball) {
+            ball.setVelocityY(30);
+            ball.setCollideWorldBounds(true);
+            ball.setBounce(1);
+        });
 
         // The player and its settings
         this.player = this.physics.add.sprite(32, 100, 'hero');
