@@ -3,15 +3,17 @@ const ANIM_IDLE = "player-idle";
 const CANVAS_WIDTH = 256
 const CANVAS_HEIGHT = 224
 
-var LevelOne = new Level("LevelOne")
+var level1 = new LevelOne("Level1")
+var level2 = new LevelTwo("Level2")
 
-var EndScreen = new Phaser.Class({
+var endScreen = new Phaser.Class({
     Extends: Phaser.Scene,
     initialize: function() {
         Phaser.Scene.call(this, { "key": "EndScreen" });
     },
     init: function(data) {
         this.message = data.message;
+        this.nextLevel = data.nextLevel;
     },
     preload: function() {},
     create: function() {
@@ -29,10 +31,11 @@ var EndScreen = new Phaser.Class({
         //  Input Events
         this.cursors = this.input.keyboard.createCursorKeys();
     },
+
     update: function() {
         if (this.cursors.shift.isDown)
         {
-            this.scene.start("LevelOne");
+            this.scene.start("Level" + this.nextLevel);
         }
     }
 });
@@ -53,7 +56,7 @@ var config = {
             mode: Phaser.Scale.FIT,
             autoCenter: Phaser.Scale.CENTER_BOTH
     },
-    scene: [ LevelOne, EndScreen ]
+    scene: [ level1, level2, endScreen ]
 };
 
 var game = new Phaser.Game(config);

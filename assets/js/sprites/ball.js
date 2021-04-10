@@ -9,6 +9,15 @@ class Ball extends Phaser.Physics.Arcade.Sprite
     {
         super.preUpdate(time, delta);
     }
+
+    hit(tipX, tipY)
+    {
+        if (tipX > this.x){
+            this.disableBody(true, true);
+            return false
+        }
+        return true
+    }
 }
 
 class Balls extends Phaser.Physics.Arcade.Group

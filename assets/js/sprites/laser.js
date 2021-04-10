@@ -11,7 +11,7 @@ class Laser extends Phaser.Physics.Arcade.Sprite
 
         this.setActive(true);
         this.setVisible(true);
-        this.setVelocityX(100);
+        this.setVelocityX(70);
     }
 
     preUpdate (time, delta)
@@ -23,6 +23,13 @@ class Laser extends Phaser.Physics.Arcade.Sprite
             this.setActive(false);
             this.setVisible(false);
         }
+    }
+
+    getTip()
+    {
+        var tipX = Math.ceil(this.x + this.width);
+        var tipY = Math.ceil(this.y + this.height / 2);
+        return [tipX, tipY]
     }
 }
 
