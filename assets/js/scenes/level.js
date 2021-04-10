@@ -15,6 +15,19 @@ class Level extends Phaser.Scene
         this.energy;
     }
 
+    init (data)
+    {
+        if (data.energyLevel == undefined)
+        {
+            this.energyLevel = 25
+        }
+        else
+        {
+            this.energyLevel = data.energyLevel;
+        }
+
+    }
+
     preload ()
     {
         this.load.spritesheet('hero', 'assets/sprites/4c_32_32_hero.png', { frameWidth: 32, frameHeight: 32 });
@@ -49,9 +62,24 @@ class Level extends Phaser.Scene
         this.cursors = this.input.keyboard.createCursorKeys();
     }
 
+    setEnergyLevel (currentEnergyLevel, boost)
+    {
+        if (currentEnergyLevel == undefined)
+        {
+            this.energyLevel = boost
+        }
+        else
+        {
+            this.energyLevel = currentEnergyLevel + boost;
+            if (this.energyLevel > 25)
+            {
+                this.energyLevel = 25;
+            }
+        }
+    }
+
     createEnergy()
     {
-        this.energyLevel = 6
         this.energy = this.physics.add.sprite(55, 10, 'energy');
         // x and y is in the upper left corner
         this.energy.setOrigin(0, 0)
@@ -143,7 +171,8 @@ class Level extends Phaser.Scene
     {
         this.scene.start("EndScreen", {
             "message": "WIN",
-            "nextLevel": 2
+            "nextLevel": 2,
+            "energyLevel": this.energyLevel
         });
     }
 
@@ -189,6 +218,11 @@ class Level extends Phaser.Scene
 
 class LevelOne extends Level
 {
+    init (data)
+    {
+        this.setEnergyLevel(data.energyLevel, 8)
+    }
+
     createTargets()
     {
        // create target group
@@ -203,12 +237,17 @@ class LevelOne extends Level
 
 class LevelTwo extends Level
 {
+    init (data)
+    {
+        this.setEnergyLevel(data.energyLevel, 7)
+    }
+
     createTargets()
     {
        // create target group
        this.targets = new Balls(this)
        this.targets.children.iterate(function (target) {
-           target.setVelocityY(80);
+           target.setVelocityY(Phaser.Math.Between(20, 60));
            target.setCollideWorldBounds(true);
            target.setBounce(1);
        });
