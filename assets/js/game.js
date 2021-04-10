@@ -1,5 +1,6 @@
 const ANIM_SHOOT = 'player-shoot';
 const ANIM_IDLE = "player-idle";
+const ANIM_ENERGY = "energy-level-"
 const CANVAS_WIDTH = 256
 const CANVAS_HEIGHT = 224
 

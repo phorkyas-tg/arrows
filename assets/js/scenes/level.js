@@ -6,16 +6,20 @@ class Level extends Phaser.Scene
 
         this.player = null;
         this.cursors = null;
-        this.idle = true;
-        this.isBusy = false
+        this.idle;
+        this.isBusy;
         this.lasers;
         this.targets;
+
+        this.energyLevel;
+        this.energy;
     }
 
     preload ()
     {
         this.load.spritesheet('hero', 'assets/sprites/4c_32_32_hero.png', { frameWidth: 32, frameHeight: 32 });
         this.load.image('border', 'assets/sprites/4c_256_224_border.png');
+        this.load.spritesheet('energy', 'assets/sprites/4c_96_32_energy.png', { frameWidth: 96, frameHeight: 32 });
         this.load.spritesheet('ball', 'assets/sprites/4c_16_16_ball.png', { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet('laser', 'assets/sprites/4c_8_8_laser.png', { frameWidth: 8, frameHeight: 8 });
     }
@@ -36,6 +40,49 @@ class Level extends Phaser.Scene
         this.physics.add.overlap(this.lasers, this.targets, this.hitTarget, null, this);
 
         // The player and its settings
+        this.createPlayer()
+
+        // energy
+        this.createEnergy()
+
+        //  Input Events
+        this.cursors = this.input.keyboard.createCursorKeys();
+    }
+
+    createEnergy()
+    {
+        this.energyLevel = 6
+        this.energy = this.physics.add.sprite(55, 10, 'energy');
+        // x and y is in the upper left corner
+        this.energy.setOrigin(0, 0)
+
+        for (var i = 0; i < 12; i += 2)
+        {
+            this.anims.create({
+                key: ANIM_ENERGY + (i/2),
+                frames: this.anims.generateFrameNumbers('energy', { start: i, end: i+1 }),
+                frameRate: 1,
+                repeat: -1,
+            });
+        };
+
+        for (var i = 12; i < 32; i ++)
+        {
+            this.anims.create({
+                key: ANIM_ENERGY + (i - 6),
+                frames: this.anims.generateFrameNumbers('energy', { start: i, end: i }),
+                frameRate: 1,
+                repeat: -1,
+            });
+        };
+
+        this.energy.anims.play(ANIM_ENERGY + this.energyLevel);
+    }
+
+    createPlayer()
+    {
+        this.idle = true;
+        this.isBusy = false;
         this.player = this.physics.add.sprite(32, 100, 'hero');
         this.player.setCollideWorldBounds(true);
 
@@ -65,9 +112,6 @@ class Level extends Phaser.Scene
               this.lasers.fireLaser(this.player.x + 17, this.player.y - 2);
           }
         }, this);
-
-        //  Input Events
-        this.cursors = this.input.keyboard.createCursorKeys();
     }
 
     createTargets()
@@ -109,6 +153,16 @@ class Level extends Phaser.Scene
         {
             if (this.cursors.space.isDown)
             {
+                this.energyLevel -= 1;
+                if (this.energyLevel < 0)
+                {
+                    this.gameOver()
+                }
+                else
+                {
+                    this.energy.anims.play(ANIM_ENERGY + this.energyLevel);
+                }
+
                 this.idle = false
                 this.isBusy = true
                 this.player.anims.play(ANIM_SHOOT);
