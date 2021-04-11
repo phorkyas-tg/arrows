@@ -32,6 +32,7 @@ class Level extends Phaser.Scene
     {
         this.load.spritesheet('hero', 'assets/sprites/4c_32_32_hero.png', { frameWidth: 32, frameHeight: 32 });
         this.load.image('border', 'assets/sprites/4c_256_224_border.png');
+        this.load.image('bg', 'assets/sprites/4c_224_144_headquarter.png');
         this.load.spritesheet('energy', 'assets/sprites/4c_96_32_energy.png', { frameWidth: 96, frameHeight: 32 });
         this.load.spritesheet('ball', 'assets/sprites/4c_16_16_ball.png', { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet('laser', 'assets/sprites/4c_8_8_laser.png', { frameWidth: 8, frameHeight: 8 });
@@ -41,6 +42,8 @@ class Level extends Phaser.Scene
     {
         // set border and world bound
         this.add.image(128, 112, 'border');
+        var bg = this.add.image(16, 64, 'bg');
+        bg.setOrigin(0, 0)
         this.physics.world.setBounds(15, 60, 224, 148)
 
         // override this method to generate specific targets
@@ -151,12 +154,6 @@ class Level extends Phaser.Scene
     {
         var tip = laser.getTip()
         var isHit = target.hit(tip[0], tip[1])
-
-        // check if all balls are popped
-        if (this.targets.countActive(true) === 0)
-        {
-            this.win()
-        }
     }
 
     gameOver()
@@ -178,6 +175,12 @@ class Level extends Phaser.Scene
 
     update ()
     {
+        // check if all targets are disabled
+        if (this.targets.countActive(true) === 0)
+        {
+            this.win()
+        }
+
         if (!this.isBusy)
         {
             if (this.cursors.space.isDown)
@@ -231,7 +234,16 @@ class LevelOne extends Level
            target.setVelocityY(40);
            target.setCollideWorldBounds(true);
            target.setBounce(1);
+           target.initExplosionEvent()
        });
+
+       this.anims.create({
+           key: ANIM_BALL_EXPLOSION,
+           frames: this.anims.generateFrameNumbers('ball', { start: 1, end: 6 }),
+           frameRate: 10,
+           repeat: 0,
+       });
+
     }
 }
 
@@ -250,6 +262,14 @@ class LevelTwo extends Level
            target.setVelocityY(Phaser.Math.Between(20, 60));
            target.setCollideWorldBounds(true);
            target.setBounce(1);
+           target.initExplosionEvent()
+       });
+
+       this.anims.create({
+          key: ANIM_BALL_EXPLOSION,
+          frames: this.anims.generateFrameNumbers('ball', { start: 1, end: 6 }),
+          frameRate: 10,
+          repeat: 0,
        });
     }
 }

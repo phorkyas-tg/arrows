@@ -13,10 +13,20 @@ class Ball extends Phaser.Physics.Arcade.Sprite
     hit(tipX, tipY)
     {
         if (tipX > this.x){
-            this.disableBody(true, true);
+            this.setVelocityY(0);
+            this.anims.play(ANIM_BALL_EXPLOSION);
             return false
         }
         return true
+    }
+
+    initExplosionEvent()
+    {
+        this.on('animationcomplete', function(animation, frame) {
+           if(animation.key === ANIM_BALL_EXPLOSION) {
+               this.disableBody(true, true);
+           }
+       }, this);
     }
 }
 
