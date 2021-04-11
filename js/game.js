@@ -2,6 +2,11 @@ const ANIM_SHOOT = 'player-shoot';
 const ANIM_IDLE = "player-idle";
 const ANIM_ENERGY = "energy-level-"
 const ANIM_BALL_EXPLOSION = "ball-explosion"
+const ANIM_PORTRAIT_IDLE = "portrait-idle"
+const ANIM_PORTRAIT_SHOOT = "portrait-shoot"
+const ANIM_PORTRAIT_HAPPY = "portrait-happy"
+const ANIM_PORTRAIT_DEAD = "portrait-dead"
+const ANIM_PORTRAIT_EXHAUSTED = "portrait-exhausted"
 const CANVAS_WIDTH = 256
 const CANVAS_HEIGHT = 224
 

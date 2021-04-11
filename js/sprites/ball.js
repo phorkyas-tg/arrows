@@ -15,9 +15,9 @@ class Ball extends Phaser.Physics.Arcade.Sprite
         if (tipX > this.x){
             this.setVelocityY(0);
             this.anims.play(ANIM_BALL_EXPLOSION);
-            return false
+            return true
         }
-        return true
+        return false
     }
 
     initExplosionEvent()

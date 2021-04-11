@@ -4,8 +4,9 @@ class Level extends Phaser.Scene
     {
         super({ "key": key });
 
-        this.player = null;
-        this.cursors = null;
+        this.player;
+        this.portrait;
+        this.cursors;
         this.idle;
         this.isBusy;
         this.lasers;
@@ -36,6 +37,7 @@ class Level extends Phaser.Scene
         this.load.spritesheet('energy', 'assets/sprites/4c_96_32_energy.png', { frameWidth: 96, frameHeight: 32 });
         this.load.spritesheet('ball', 'assets/sprites/4c_16_16_ball.png', { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet('laser', 'assets/sprites/4c_8_8_laser.png', { frameWidth: 8, frameHeight: 8 });
+        this.load.spritesheet('portrait', 'assets/sprites/4c_32_32_portrait.png', { frameWidth: 32, frameHeight: 32 });
     }
 
     create ()
@@ -57,6 +59,9 @@ class Level extends Phaser.Scene
 
         // The player and its settings
         this.createPlayer()
+
+        // create portrait in upper left corner
+        this.createPortrait()
 
         // energy
         this.createEnergy()
@@ -81,11 +86,41 @@ class Level extends Phaser.Scene
         }
     }
 
+    createPortrait()
+    {
+        this.portrait = this.physics.add.sprite(20, 21, 'portrait');
+        this.portrait.setOrigin(0, 0);
+
+        var animList = [ANIM_PORTRAIT_IDLE, ANIM_PORTRAIT_EXHAUSTED, ANIM_PORTRAIT_DEAD,
+                        ANIM_PORTRAIT_HAPPY, ANIM_PORTRAIT_SHOOT]
+        for (var i = 0; i < 5; i ++)
+        {
+            this.anims.create({
+                key: animList[i],
+                frames: this.anims.generateFrameNumbers('portrait', { start: i, end: i }),
+                frameRate: 1,
+                repeat: 0,
+            });
+        };
+
+        // always play idle if another animation is complete
+        this.portrait.on('animationcomplete', function(animation, frame) {
+            if (this.energyLevel <= 5)
+            {
+                this.portrait.anims.play(ANIM_PORTRAIT_EXHAUSTED)
+            }
+            else
+            {
+                this.portrait.anims.play(ANIM_PORTRAIT_IDLE)
+            }
+        }, this);
+    }
+
     createEnergy()
     {
-        this.energy = this.physics.add.sprite(55, 10, 'energy');
+        this.energy = this.physics.add.sprite(69, 21, 'energy');
         // x and y is in the upper left corner
-        this.energy.setOrigin(0, 0)
+        this.energy.setOrigin(0, 0);
 
         for (var i = 0; i < 12; i += 2)
         {
@@ -154,6 +189,10 @@ class Level extends Phaser.Scene
     {
         var tip = laser.getTip()
         var isHit = target.hit(tip[0], tip[1])
+        if (isHit)
+        {
+            this.portrait.anims.play(ANIM_PORTRAIT_HAPPY)
+        }
     }
 
     gameOver()
@@ -198,6 +237,7 @@ class Level extends Phaser.Scene
                 this.idle = false
                 this.isBusy = true
                 this.player.anims.play(ANIM_SHOOT);
+                this.portrait.anims.play(ANIM_PORTRAIT_SHOOT)
             }
             else if (this.cursors.up.isDown)
             {
