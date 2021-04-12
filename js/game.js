@@ -1,6 +1,7 @@
 const ANIM_SHOOT = 'player-shoot';
 const ANIM_IDLE = "player-idle";
 const ANIM_ENERGY = "energy-level-"
+const ANIM_LASER = "laser-idle"
 const ANIM_BALL_EXPLOSION = "ball-explosion"
 const ANIM_PORTRAIT_IDLE = "portrait-idle"
 const ANIM_PORTRAIT_SHOOT = "portrait-shoot"

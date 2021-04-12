@@ -214,30 +214,33 @@ class Level extends Phaser.Scene
 
     update ()
     {
-        // check if all targets are disabled
-        if (this.targets.countActive(true) === 0)
+        // check if all targets are hit
+        if (this.targets.isEmpty())
         {
             this.win()
+        }
+        // Check game over condition
+        // if there is no active laser in the air and you have no
+        // energy you lose and you are not busy
+        else if (this.energyLevel <= 0 && this.lasers.countActive(true) === 0 && !this.isBusy)
+        {
+            this.gameOver();
         }
 
         if (!this.isBusy)
         {
             if (this.cursors.space.isDown)
             {
-                this.energyLevel -= 1;
-                if (this.energyLevel < 0)
+                // you can only shoot if energyLevel > 0
+                if (this.energyLevel > 0)
                 {
-                    this.gameOver()
-                }
-                else
-                {
+                    this.energyLevel -= 1;
                     this.energy.anims.play(ANIM_ENERGY + this.energyLevel);
+                    this.idle = false
+                    this.isBusy = true
+                    this.player.anims.play(ANIM_SHOOT);
+                    this.portrait.anims.play(ANIM_PORTRAIT_SHOOT)
                 }
-
-                this.idle = false
-                this.isBusy = true
-                this.player.anims.play(ANIM_SHOOT);
-                this.portrait.anims.play(ANIM_PORTRAIT_SHOOT)
             }
             else if (this.cursors.up.isDown)
             {
@@ -263,7 +266,7 @@ class LevelOne extends Level
 {
     init (data)
     {
-        this.setEnergyLevel(data.energyLevel, 8)
+        this.setEnergyLevel(data.energyLevel, 5)
     }
 
     createTargets()

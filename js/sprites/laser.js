@@ -39,9 +39,8 @@ class Lasers extends Phaser.Physics.Arcade.Group
     {
         super(scene.physics.world, scene);
 
-        this.animKey = "laser-animation"
         scene.anims.create({
-            key: this.animKey,
+            key: ANIM_LASER,
             frames: scene.anims.generateFrameNumbers('laser', { start: 0, end: 7 }),
             frameRate: 10,
             repeat: -1,
@@ -63,7 +62,7 @@ class Lasers extends Phaser.Physics.Arcade.Group
         if (laser)
         {
             laser.fire(x, y);
-            laser.anims.play(this.animKey);
+            laser.anims.play(ANIM_LASER)
         }
     }
 }
