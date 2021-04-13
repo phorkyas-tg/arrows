@@ -7,13 +7,12 @@ class Level extends Phaser.Scene
         this.player;
         this.portrait;
         this.cursors;
-        this.idle;
         this.isBusy;
         this.lasers;
         this.targets;
-
         this.energyLevel;
         this.energy;
+        this.won;
     }
 
     init (data)
@@ -42,6 +41,8 @@ class Level extends Phaser.Scene
 
     create ()
     {
+        // set win time to -1
+        this.won = -1
         // set border and world bound
         this.add.image(128, 112, 'border');
         var bg = this.add.image(16, 64, 'bg');
@@ -109,6 +110,10 @@ class Level extends Phaser.Scene
             {
                 this.portrait.anims.play(ANIM_PORTRAIT_EXHAUSTED)
             }
+            else if (this.won >= 0)
+            {
+                this.portrait.anims.play(ANIM_PORTRAIT_HAPPY)
+            }
             else
             {
                 this.portrait.anims.play(ANIM_PORTRAIT_IDLE)
@@ -147,7 +152,6 @@ class Level extends Phaser.Scene
 
     createPlayer()
     {
-        this.idle = true;
         this.isBusy = false;
         this.player = this.physics.add.sprite(32, 100, 'hero');
         this.player.setCollideWorldBounds(true);
@@ -158,6 +162,7 @@ class Level extends Phaser.Scene
             frameRate: 10,
             repeat: -1,
         });
+        this.player.anims.play(ANIM_IDLE, true);
 
         this.anims.create({
             key: ANIM_SHOOT,
@@ -168,8 +173,12 @@ class Level extends Phaser.Scene
 
         this.player.on('animationcomplete', function(animation, frame) {
             if(animation.key === ANIM_SHOOT) {
-                this.idle = true;
                 this.isBusy = false
+            }
+            // play after any other animation is complete idle animation after its complete
+            if(animation.key != ANIM_IDLE)
+            {
+                this.player.anims.play(ANIM_IDLE, true);
             }
         }, this);
 
@@ -212,51 +221,56 @@ class Level extends Phaser.Scene
         });
     }
 
-    update ()
+    update (time, delta)
     {
         // check if all targets are hit
-        if (this.targets.isEmpty())
+        if (this.targets.isEmpty() && this.won < 0)
+        {
+            this.portrait.anims.play(ANIM_PORTRAIT_HAPPY)
+            this.won = time
+        }
+        // play win after 1000 ms
+        if (this.won > 0 && this.won + 1000 < time)
         {
             this.win()
         }
-        // Check game over condition
-        // if there is no active laser in the air and you have no
-        // energy you lose and you are not busy
-        else if (this.energyLevel <= 0 && this.lasers.countActive(true) === 0 && !this.isBusy)
+
+        // Movement
+        if (this.cursors.up.isDown)
         {
-            this.gameOver();
+            this.player.y -= 2;
+        }
+        else if (this.cursors.down.isDown)
+        {
+            this.player.y += 2;
+        }
+        // restart (for debugging)
+        else if (this.cursors.shift.isDown)
+        {
+            this.gameOver()
         }
 
-        if (!this.isBusy)
+        // everything around shooting
+        if (!this.isBusy && this.won < 0)
         {
-            if (this.cursors.space.isDown)
+            // Check game over condition
+            // if there is no active laser in the air and you have no
+            // energy you lose and you are not busy
+            if (this.energyLevel <= 0 && this.lasers.countActive(true) === 0)
+            {
+                this.gameOver();
+            }
+            else if (this.cursors.space.isDown)
             {
                 // you can only shoot if energyLevel > 0
                 if (this.energyLevel > 0)
                 {
                     this.energyLevel -= 1;
                     this.energy.anims.play(ANIM_ENERGY + this.energyLevel);
-                    this.idle = false
                     this.isBusy = true
                     this.player.anims.play(ANIM_SHOOT);
                     this.portrait.anims.play(ANIM_PORTRAIT_SHOOT)
                 }
-            }
-            else if (this.cursors.up.isDown)
-            {
-                this.player.y -= 2;
-            }
-            else if (this.cursors.down.isDown)
-                {
-                    this.player.y += 2;
-                }
-            else if (this.cursors.shift.isDown)
-            {
-                this.gameOver()
-            }
-            if (this.idle)
-            {
-                this.player.anims.play(ANIM_IDLE, true);
             }
         }
     }
