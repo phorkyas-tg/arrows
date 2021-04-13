@@ -14,13 +14,18 @@ class Ball extends Phaser.Physics.Arcade.Sprite
 
     hit(tipX, tipY)
     {
-        if (tipX > this.x){
+        if (tipX > this.x && !this.isHit){
             this.setVelocityY(0);
-            this.isHit = true
+            this.isHit = true;
             this.anims.play(ANIM_BALL_EXPLOSION);
-            return true
+            return true;
         }
-        return false
+        return false;
+    }
+
+    getBaseScore()
+    {
+        return 5;
     }
 
     initExplosionEvent()
@@ -39,7 +44,7 @@ class Balls extends Phaser.Physics.Arcade.Group
     {
         super(scene.physics.world, scene);
 
-        this.ballCount = 10;
+        this.ballCount = 1;
 
         this.createMultiple({
             frameQuantity: this.ballCount,

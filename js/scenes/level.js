@@ -13,18 +13,17 @@ class Level extends Phaser.Scene
         this.energyLevel;
         this.energy;
         this.won;
+        this.score;
+        this.comboCounter;
+        this.comboTime;
+
+        // ToDo make some nice sprites
+        this.comboCounterText;
+        this.scoreText;
     }
 
     init (data)
     {
-        if (data.energyLevel == undefined)
-        {
-            this.energyLevel = 25
-        }
-        else
-        {
-            this.energyLevel = data.energyLevel;
-        }
 
     }
 
@@ -43,6 +42,10 @@ class Level extends Phaser.Scene
     {
         // set win time to -1
         this.won = -1
+
+        // set up score system
+        this.createScore()
+
         // set border and world bound
         this.add.image(128, 112, 'border');
         var bg = this.add.image(16, 64, 'bg');
@@ -85,6 +88,49 @@ class Level extends Phaser.Scene
                 this.energyLevel = 25;
             }
         }
+    }
+
+    setScore (currentScore)
+    {
+        if (currentScore == undefined)
+        {
+            this.score = currentScore
+        }
+        else
+        {
+            this.score = 0
+        }
+    }
+
+    createScore()
+    {
+        this.comboCounter = 1;
+        this.comboTime = -1;
+        this.score = 0
+
+        this.scoreText = this.add.text(
+             220,
+             21,
+             this.score,
+             {
+                 fontSize: 10,
+                 color: "#000000",
+                 fontStyle: "bold"
+             }
+        )
+        this.scoreText.setOrigin(1, 0);
+
+        this.comboCounterText = this.add.text(
+             220,
+             31,
+             this.comboCounter,
+             {
+                 fontSize: 10,
+                 color: "#000000",
+                 fontStyle: "bold"
+             }
+        )
+        this.comboCounterText.setOrigin(1, 0);
     }
 
     createPortrait()
@@ -200,7 +246,15 @@ class Level extends Phaser.Scene
         var isHit = target.hit(tip[0], tip[1])
         if (isHit)
         {
-            this.portrait.anims.play(ANIM_PORTRAIT_HAPPY)
+            this.portrait.anims.play(ANIM_PORTRAIT_HAPPY);
+            // add to score
+            this.score += this.comboCounter * target.getBaseScore();
+            // add to ComboCounter
+            this.comboCounter *= 2
+            // reset comboTime
+            this.comboTime = -1
+            this.scoreText.text = this.score;
+            this.comboCounterText.text = this.comboCounter;
         }
     }
 
@@ -217,7 +271,8 @@ class Level extends Phaser.Scene
         this.scene.start("EndScreen", {
             "message": "WIN",
             "nextLevel": 2,
-            "energyLevel": this.energyLevel
+            "energyLevel": this.energyLevel,
+            "score": this.score
         });
     }
 
@@ -234,6 +289,19 @@ class Level extends Phaser.Scene
         {
             this.win()
         }
+
+        // reset comboCounter after 2 s
+        if (this.comboTime < 0)
+        {
+            this.comboTime = time;
+        }
+        else if (this.comboTime + 2000 < time && this.comboCounter > 1)
+        {
+            this.comboCounter = this.comboCounter / 2;
+            this.comboCounterText.text = this.comboCounter;
+            this.comboTime = -1
+        }
+
 
         // Movement
         if (this.cursors.up.isDown)
@@ -281,6 +349,7 @@ class LevelOne extends Level
     init (data)
     {
         this.setEnergyLevel(data.energyLevel, 5)
+        this.setScore(data.score);
     }
 
     createTargets()
@@ -308,7 +377,8 @@ class LevelTwo extends Level
 {
     init (data)
     {
-        this.setEnergyLevel(data.energyLevel, 7)
+        this.setEnergyLevel(data.energyLevel, 7);
+        this.setScore(data.score);
     }
 
     createTargets()

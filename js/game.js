@@ -23,6 +23,7 @@ var endScreen = new Phaser.Class({
         this.message = data.message;
         this.nextLevel = data.nextLevel;
         this.energyLevel = data.energyLevel;
+        this.score = data.score;
     },
     preload: function() {},
     create: function() {
@@ -45,7 +46,8 @@ var endScreen = new Phaser.Class({
         if (this.cursors.shift.isDown)
         {
             this.scene.start("Level" + this.nextLevel, {
-                "energyLevel": this.energyLevel
+                "energyLevel": this.energyLevel,
+                "score": this.score
             });
         }
     }
