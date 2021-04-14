@@ -44,7 +44,7 @@ class Balls extends Phaser.Physics.Arcade.Group
     {
         super(scene.physics.world, scene);
 
-        this.ballCount = 1;
+        this.ballCount = 10;
 
         this.createMultiple({
             frameQuantity: this.ballCount,
