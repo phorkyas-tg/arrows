@@ -7,7 +7,7 @@ Sprites: Aseprite
 #ToDo
 * hero death animation
 * start, in between and end screen
-* high score for the upper right corner
+** score is derived from level score, time used score, bullets left score, level complete bonus
 
 * more levels
     * lvl 3 with evil balls that can't be hit (energy -3?)
