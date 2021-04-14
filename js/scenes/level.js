@@ -15,11 +15,9 @@ class Level extends Phaser.Scene
         this.won;
         this.score;
         this.comboCounter;
-        this.comboTime;
-
-        // ToDo make some nice sprites
-        this.comboCounterText;
-        this.scoreText;
+        this.scoreBoard;
+        this.clock;
+        this.numbers;
     }
 
     init (data)
@@ -36,6 +34,9 @@ class Level extends Phaser.Scene
         this.load.spritesheet('ball', 'assets/sprites/4c_16_16_ball.png', { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet('laser', 'assets/sprites/4c_8_8_laser.png', { frameWidth: 8, frameHeight: 8 });
         this.load.spritesheet('portrait', 'assets/sprites/4c_32_32_portrait.png', { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet('score', 'assets/sprites/4c_55_32_score.png', { frameWidth: 55, frameHeight: 32 });
+        this.load.spritesheet('clock', 'assets/sprites/4c_10_10_clock.png', { frameWidth: 10, frameHeight: 10 });
+        this.load.spritesheet('number', 'assets/sprites/4c_7_17_number.png', { frameWidth: 7, frameHeight: 17 });
     }
 
     create ()
@@ -90,47 +91,117 @@ class Level extends Phaser.Scene
         }
     }
 
-    setScore (currentScore)
+    initScore (currentScore)
     {
         if (currentScore == undefined)
         {
-            this.score = currentScore
+            this.score = 0
         }
         else
         {
-            this.score = 0
+            this.score = currentScore
         }
+    }
+
+    updateScore()
+    {
+        let i = 10000;
+        let scoreTemp = this.score
+        this.numbers.children.iterate(function (number) {
+            let n = (scoreTemp - (scoreTemp % i)) / i;
+            scoreTemp = scoreTemp - (n * i)
+            number.anims.play(ANIM_SCORE_NUMBER + n)
+            i = i / 10;
+        }, this);
+    }
+
+    updateComboMultiplier()
+    {
+        let n = 0;
+        if (this.comboCounter === 2){
+            n = 1;
+        }
+        else if (this.comboCounter === 4){
+            n = 2;
+        }
+        else if (this.comboCounter === 8){
+            n = 3;
+        }
+        else if (this.comboCounter === 16){
+            n = 4;
+        }
+        else if (this.comboCounter > 16){
+            n = 5;
+        }
+        this.scoreBoard.anims.play(ANIM_SCORE_MULTIPLIER + n)
     }
 
     createScore()
     {
         this.comboCounter = 1;
-        this.comboTime = -1;
-        this.score = 0
 
-        this.scoreText = this.add.text(
-             220,
-             21,
-             this.score,
-             {
-                 fontSize: 10,
-                 color: "#000000",
-                 fontStyle: "bold"
-             }
-        )
-        this.scoreText.setOrigin(1, 0);
+        this.scoreBoard = this.physics.add.sprite(181, 21, 'score');
+        this.scoreBoard.setOrigin(0, 0);
 
-        this.comboCounterText = this.add.text(
-             220,
-             31,
-             this.comboCounter,
-             {
-                 fontSize: 10,
-                 color: "#000000",
-                 fontStyle: "bold"
-             }
-        )
-        this.comboCounterText.setOrigin(1, 0);
+        this.clock = this.physics.add.sprite(224, 22, 'clock');
+        this.clock.setOrigin(0, 0);
+
+        // create numbers group
+        this.numbers = new ScoreNumbers(this)
+        this.numbers.children.iterate(function (number) {
+            number.setOrigin(0, 0);
+        });
+
+        for (var i = 0; i < 10; i += 1)
+        {
+            this.anims.create({
+                key: ANIM_SCORE_NUMBER + i,
+                frames: this.anims.generateFrameNumbers('number', { start: i, end: i }),
+                frameRate: 1,
+                repeat: -1,
+            });
+        };
+
+        for (var i = 0; i < 6; i += 1)
+        {
+            this.anims.create({
+                key: ANIM_SCORE_MULTIPLIER + i,
+                frames: this.anims.generateFrameNumbers('score', { start: i, end: i }),
+                frameRate: 1,
+                repeat: -1,
+            });
+        };
+
+        this.anims.create({
+            key: ANIM_SCORE_CLOCK_IDLE,
+            frames: this.anims.generateFrameNumbers('clock', { start: 0, end: 0 }),
+            frameRate: 1,
+            repeat: -1,
+        });
+
+        this.anims.create({
+            key: ANIM_SCORE_CLOCK_RUN,
+            frames: this.anims.generateFrameNumbers('clock', { start: 1, end: 4 }),
+            frameRate: 2,
+            repeat: 0,
+        });
+
+        this.clock.on('animationcomplete', function(animation, frame) {
+            if(animation.key === ANIM_SCORE_CLOCK_RUN) {
+                this.comboCounter = this.comboCounter / 2;
+                this.updateComboMultiplier()
+                if(this.comboCounter === 1)
+                {
+                    this.clock.anims.play(ANIM_SCORE_CLOCK_IDLE);
+                }
+                else
+                {
+                    this.clock.anims.play(ANIM_SCORE_CLOCK_RUN);
+                }
+            }
+        }, this);
+
+        this.updateScore()
     }
 
     createPortrait()
@@ -169,7 +240,7 @@ class Level extends Phaser.Scene
 
     createEnergy()
     {
-        this.energy = this.physics.add.sprite(69, 21, 'energy');
+        this.energy = this.physics.add.sprite(68, 21, 'energy');
         // x and y is in the upper left corner
         this.energy.setOrigin(0, 0);
 
@@ -250,11 +321,14 @@ class Level extends Phaser.Scene
             // add to score
             this.score += this.comboCounter * target.getBaseScore();
             // add to ComboCounter
-            this.comboCounter *= 2
-            // reset comboTime
-            this.comboTime = -1
-            this.scoreText.text = this.score;
-            this.comboCounterText.text = this.comboCounter;
+            if (this.comboCounter < 32)
+            {
+                this.comboCounter *= 2
+            }
+            this.clock.anims.play(ANIM_SCORE_CLOCK_RUN);
+
+            this.updateScore();
+            this.updateComboMultiplier();
         }
     }
 
@@ -289,19 +363,6 @@ class Level extends Phaser.Scene
         {
             this.win()
         }
-
-        // reset comboCounter after 2 s
-        if (this.comboTime < 0)
-        {
-            this.comboTime = time;
-        }
-        else if (this.comboTime + 2000 < time && this.comboCounter > 1)
-        {
-            this.comboCounter = this.comboCounter / 2;
-            this.comboCounterText.text = this.comboCounter;
-            this.comboTime = -1
-        }
-
 
         // Movement
         if (this.cursors.up.isDown)
@@ -349,7 +410,7 @@ class LevelOne extends Level
     init (data)
     {
         this.setEnergyLevel(data.energyLevel, 5)
-        this.setScore(data.score);
+        this.initScore(data.score);
     }
 
     createTargets()
@@ -378,7 +439,7 @@ class LevelTwo extends Level
     init (data)
     {
         this.setEnergyLevel(data.energyLevel, 7);
-        this.setScore(data.score);
+        this.initScore(data.score);
     }
 
     createTargets()

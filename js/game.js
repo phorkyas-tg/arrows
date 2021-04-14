@@ -8,6 +8,10 @@ const ANIM_PORTRAIT_SHOOT = "portrait-shoot"
 const ANIM_PORTRAIT_HAPPY = "portrait-happy"
 const ANIM_PORTRAIT_DEAD = "portrait-dead"
 const ANIM_PORTRAIT_EXHAUSTED = "portrait-exhausted"
+const ANIM_SCORE_NUMBER = "score-number-"
+const ANIM_SCORE_MULTIPLIER = "score-multiplier-"
+const ANIM_SCORE_CLOCK_IDLE = "score-clock-idle"
+const ANIM_SCORE_CLOCK_RUN = "score-clock-run"
 const CANVAS_WIDTH = 256
 const CANVAS_HEIGHT = 224
 
