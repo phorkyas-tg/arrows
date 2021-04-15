@@ -47,14 +47,136 @@ var endScreen = new Phaser.Class({
     },
 
     update: function() {
-        if (this.cursors.shift.isDown)
+        // ToDo to something for the transition
+        //if (this.cursors.space.isDown)
+
+        this.scene.start("Level" + this.nextLevel, {
+            "energyLevel": this.energyLevel,
+            "score": this.score
+        });
+
+    }
+});
+
+var startScreen = new Phaser.Class({
+    Extends: Phaser.Scene,
+    initialize: function() {
+        Phaser.Scene.call(this, { "key": "StartScreen" });
+    },
+    preload: function() {
+        this.load.spritesheet('start', 'assets/sprites/4c_256_224_Start.png', { frameWidth: 256, frameHeight: 224 });
+    },
+    create: function() {
+        this.start = this.physics.add.sprite(0, 0, 'start').setOrigin(0, 0);
+
+        this.anims.create({
+            key: "start-idle",
+            frames: this.anims.generateFrameNumbers('start', { start: 0, end: 1 }),
+            frameRate: 4,
+            repeat: -1,
+        });
+        this.start.anims.play("start-idle", true);
+
+        //  Input Events
+        this.cursors = this.input.keyboard.createCursorKeys();
+    },
+
+    update: function() {
+        if (this.cursors.space.isDown)
         {
-            this.scene.start("Level" + this.nextLevel, {
-                "energyLevel": this.energyLevel,
-                "score": this.score
+            this.scene.pause();
+            this.scene.start("Level1", {
+                "energyLevel": 5,
+                "score": 0
             });
         }
     }
+});
+
+
+var help = new Phaser.Class({
+    Extends: Phaser.Scene,
+
+    initialize:
+
+    function help ()
+    {
+        Phaser.Scene.call(this, { key: 'help' });
+    },
+
+    init: function(data) {
+        this.currentLevel = data.currentLevel;
+    },
+    preload: function ()
+    {
+        this.load.image('help', 'assets/sprites/4c_192_128_help.png');
+        this.load.spritesheet('hero', 'assets/sprites/4c_32_32_hero.png', { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet('space', 'assets/sprites/4c_26_12_key_space.png', { frameWidth: 26, frameHeight: 12 });
+        this.load.spritesheet('up', 'assets/sprites/4c_11_12_key_up.png', { frameWidth: 11, frameHeight: 12 });
+        this.load.spritesheet('down', 'assets/sprites/4c_11_12_key_down.png', { frameWidth: 11, frameHeight: 12 });
+    },
+
+    create: function ()
+    {
+        this.add.image(32, 64, 'help').setOrigin(0, 0);
+        this.playerIdle = this.physics.add.sprite(45, 142, 'hero').setOrigin(0, 0);
+        this.playerShoot = this.physics.add.sprite(125, 139, 'hero').setOrigin(0, 0);
+
+        this.anims.create({
+            key: "help-idle",
+            frames: this.anims.generateFrameNumbers('hero', { start: 0, end: 7 }),
+            frameRate: 10,
+            repeat: -1,
+        });
+        this.playerIdle.anims.play("help-idle", true);
+
+        this.anims.create({
+            key: "help-shoot",
+            frames: this.anims.generateFrameNumbers('hero', { start: 8, end: 15 }),
+            frameRate: 10,
+            repeat: -1,
+        });
+        this.playerShoot.anims.play("help-shoot", true);
+
+        this.space = this.physics.add.sprite(125, 173, 'space').setOrigin(0, 0);
+        this.anims.create({
+            key: "help-space",
+            frames: this.anims.generateFrameNumbers('space', { start: 0, end: 1 }),
+            frameRate: 2,
+            repeat: -1,
+        });
+        this.space.anims.play("help-space", true);
+
+        this.up = this.physics.add.sprite(80, 148, 'up').setOrigin(0, 0);
+        this.anims.create({
+            key: "help-up",
+            frames: this.anims.generateFrameNumbers('up', { start: 0, end: 1 }),
+            frameRate: 2,
+            repeat: -1,
+        });
+        this.up.anims.play("help-up", true);
+
+        this.down = this.physics.add.sprite(80, 162, 'down').setOrigin(0, 0);
+        this.anims.create({
+            key: "help-down",
+            frames: this.anims.generateFrameNumbers('down', { start: 1, end: 0 }),
+            frameRate: 2,
+            repeat: -1,
+        });
+        this.down.anims.play("help-down", true);
+
+        this.cursors = this.input.keyboard.createCursorKeys();
+    },
+
+    update: function ()
+    {
+        if (this.cursors.space.isDown)
+        {
+            this.scene.resume(this.currentLevel);
+            this.scene.stop();
+        }
+    }
+
 });
 
 var config = {
@@ -73,7 +195,7 @@ var config = {
             mode: Phaser.Scale.FIT,
             autoCenter: Phaser.Scale.CENTER_BOTH
     },
-    scene: [ level1, level2, endScreen ]
+    scene: [ startScreen, level1, level2, endScreen, help]
 };
 
 var game = new Phaser.Game(config);

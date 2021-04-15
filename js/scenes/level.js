@@ -4,6 +4,7 @@ class Level extends Phaser.Scene
     {
         super({ "key": key });
 
+        this.levelNumber;
         this.player;
         this.portrait;
         this.cursors;
@@ -18,6 +19,8 @@ class Level extends Phaser.Scene
         this.scoreBoard;
         this.clock;
         this.numbers;
+
+        this.helpKey;
     }
 
     init (data)
@@ -73,6 +76,8 @@ class Level extends Phaser.Scene
 
         //  Input Events
         this.cursors = this.input.keyboard.createCursorKeys();
+        this.helpKey = this.input.keyboard.addKey('H');
+        this.pauseKey = this.input.keyboard.addKey('P');
     }
 
     setEnergyLevel (currentEnergyLevel, boost)
@@ -344,7 +349,7 @@ class Level extends Phaser.Scene
     {
         this.scene.start("EndScreen", {
             "message": "WIN",
-            "nextLevel": 2,
+            "nextLevel": this.levelNumber + 1,
             "energyLevel": this.energyLevel,
             "score": this.score
         });
@@ -402,6 +407,14 @@ class Level extends Phaser.Scene
                 }
             }
         }
+
+        if (this.helpKey.isDown || this.pauseKey.isDown)
+        {
+            this.scene.pause();
+            this.scene.launch('help', {
+                "currentLevel": "Level" + this.levelNumber,
+            });
+        }
     }
 }
 
@@ -411,6 +424,7 @@ class LevelOne extends Level
     {
         this.setEnergyLevel(data.energyLevel, 5)
         this.initScore(data.score);
+        this.levelNumber = 1;
     }
 
     createTargets()
@@ -440,6 +454,7 @@ class LevelTwo extends Level
     {
         this.setEnergyLevel(data.energyLevel, 7);
         this.initScore(data.score);
+        this.levelNumber = 2;
     }
 
     createTargets()
