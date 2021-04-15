@@ -381,7 +381,7 @@ class Level extends Phaser.Scene
         // restart (for debugging)
         else if (this.cursors.shift.isDown)
         {
-            this.gameOver()
+            this.win()
         }
 
         // everything around shooting
@@ -454,7 +454,8 @@ class LevelTwo extends Level
     {
         this.setEnergyLevel(data.energyLevel, 7);
         this.initScore(data.score);
-        this.levelNumber = 2;
+        // ToDo if there is a level 3 set this to 2
+        this.levelNumber = 1;
     }
 
     createTargets()
