@@ -38,13 +38,53 @@ class Ball extends Phaser.Physics.Arcade.Sprite
     }
 }
 
+class EnemyBall extends Phaser.Physics.Arcade.Sprite
+{
+    constructor (scene, x, y)
+    {
+        super(scene, x, y, 'enemyBall');
+
+        this.isHit = false
+    }
+
+    preUpdate (time, delta)
+    {
+        super.preUpdate(time, delta);
+    }
+
+    hit(tipX, tipY)
+    {
+        if (tipX > this.x && !this.isHit){
+            this.setVelocityY(0);
+            this.isHit = true;
+            this.anims.play(ANIM_ENEMY_BALL_EXPLOSION);
+            return true;
+        }
+        return false;
+    }
+
+    getEnergyDrain()
+    {
+        return 3;
+    }
+
+    initExplosionEvent()
+    {
+        this.on('animationcomplete', function(animation, frame) {
+           if(animation.key === ANIM_ENEMY_BALL_EXPLOSION) {
+               this.disableBody(true, true);
+           }
+       }, this);
+    }
+}
+
 class Balls extends Phaser.Physics.Arcade.Group
 {
-    constructor (scene)
+    constructor (scene, ballCount=10)
     {
         super(scene.physics.world, scene);
 
-        this.ballCount = 10;
+        this.ballCount = ballCount;
 
         this.createMultiple({
             frameQuantity: this.ballCount,
@@ -75,5 +115,24 @@ class Balls extends Phaser.Physics.Arcade.Group
             return true
         }
         return false
+    }
+}
+
+class EnemyBalls extends Phaser.Physics.Arcade.Group
+{
+    constructor (scene, ballCount=3)
+    {
+        super(scene.physics.world, scene);
+
+        this.ballCount = ballCount;
+
+        this.createMultiple({
+            frameQuantity: this.ballCount,
+            key: 'enemyBall',
+            active: true,
+            visible: true,
+            classType: EnemyBall,
+            setXY: { x: CANVAS_WIDTH - 180, y: CANVAS_HEIGHT - 50, stepX: 17 }
+        });
     }
 }

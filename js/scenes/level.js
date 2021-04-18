@@ -11,6 +11,7 @@ class Level extends Phaser.Scene
         this.isBusy;
         this.lasers;
         this.targets;
+        this.enemys;
         this.energyLevel;
         this.energy;
         this.won;
@@ -35,6 +36,7 @@ class Level extends Phaser.Scene
         this.load.image('bg', 'assets/sprites/4c_224_144_headquarter.png');
         this.load.spritesheet('energy', 'assets/sprites/4c_96_32_energy.png', { frameWidth: 96, frameHeight: 32 });
         this.load.spritesheet('ball', 'assets/sprites/4c_16_16_ball.png', { frameWidth: 16, frameHeight: 16 });
+        this.load.spritesheet('enemyBall', 'assets/sprites/4c_16_16_green_ball.png', { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet('laser', 'assets/sprites/4c_8_8_laser.png', { frameWidth: 8, frameHeight: 8 });
         this.load.spritesheet('portrait', 'assets/sprites/4c_32_32_portrait.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('score', 'assets/sprites/4c_55_32_score.png', { frameWidth: 55, frameHeight: 32 });
@@ -64,6 +66,11 @@ class Level extends Phaser.Scene
 
         // add collider for lasers and targets
         this.physics.add.overlap(this.lasers, this.targets, this.hitTarget, null, this);
+        // Add collider for enemy
+        if (this.enemys != undefined)
+        {
+            this.physics.add.overlap(this.lasers, this.enemys, this.hitEnemy, null, this);
+        }
 
         // The player and its settings
         this.createPlayer()
@@ -337,6 +344,26 @@ class Level extends Phaser.Scene
         }
     }
 
+    hitEnemy(laser, target)
+    {
+        var tip = laser.getTip()
+        var isHit = target.hit(tip[0], tip[1])
+        if (isHit)
+        {
+            this.portrait.anims.play(ANIM_PORTRAIT_DEAD);
+            // drain Energy
+            this.energyLevel -= target.getEnergyDrain();
+            if (this.energyLevel < 0)
+            {
+                this.gameOver()
+            }
+            else
+            {
+                this.energy.anims.play(ANIM_ENERGY + this.energyLevel);
+            }
+        }
+    }
+
     gameOver()
     {
         this.scene.start("EndScreen", {
@@ -454,8 +481,7 @@ class LevelTwo extends Level
     {
         this.setEnergyLevel(data.energyLevel, 7);
         this.initScore(data.score);
-        // ToDo if there is a level 3 set this to 2
-        this.levelNumber = 1;
+        this.levelNumber = 2;
     }
 
     createTargets()
@@ -475,5 +501,62 @@ class LevelTwo extends Level
           frameRate: 10,
           repeat: 0,
        });
+    }
+}
+
+class LevelThree extends Level
+{
+    init (data)
+    {
+        this.setEnergyLevel(data.energyLevel, 7);
+        this.initScore(data.score);
+        // ToDo set this to 3 if there is a level 4
+        this.levelNumber = 2;
+    }
+
+    createTargets()
+    {
+        // create target group
+        this.targets = new Balls(this, 7)
+        this.enemys = new EnemyBalls(this, 3)
+
+        let x = CANVAS_WIDTH - 180;
+        let y = CANVAS_HEIGHT - 100;
+        let step = 0;
+        let i = 0
+        this.enemys.children.iterate(function (target) {
+            target.setVelocityY(Phaser.Math.Between(20, 60));
+            target.setCollideWorldBounds(true);
+            target.setBounce(1);
+            target.initExplosionEvent();
+            target.x += step
+            step += 17;
+            if (i == 2)
+            {
+                step += 17
+            }
+            i++;
+        });
+
+        this.targets.children.iterate(function (target) {
+            target.setVelocityY(Phaser.Math.Between(20, 60));
+            target.setCollideWorldBounds(true);
+            target.setBounce(1);
+            target.initExplosionEvent()
+        });
+
+        this.anims.create({
+            key: ANIM_BALL_EXPLOSION,
+            frames: this.anims.generateFrameNumbers('ball', { start: 1, end: 6 }),
+            frameRate: 10,
+            repeat: 0,
+        });
+
+        this.anims.create({
+            key: ANIM_ENEMY_BALL_EXPLOSION,
+            frames: this.anims.generateFrameNumbers('enemyBall', { start: 1, end: 6 }),
+            frameRate: 10,
+            repeat: 0,
+        });
     }
 }
