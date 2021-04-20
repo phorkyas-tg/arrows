@@ -520,29 +520,32 @@ class LevelThree extends Level
         this.targets = new Balls(this, 7)
         this.enemys = new EnemyBalls(this, 3)
 
-        let x = CANVAS_WIDTH - 180;
-        let y = CANVAS_HEIGHT - 100;
         let step = 0;
-        let i = 0
+        let i = 0;
         this.enemys.children.iterate(function (target) {
-            target.setVelocityY(Phaser.Math.Between(20, 60));
+            target.setVelocityY(Phaser.Math.Between(10, 15));
             target.setCollideWorldBounds(true);
             target.setBounce(1);
             target.initExplosionEvent();
-            target.x += step
-            step += 17;
-            if (i == 2)
-            {
-                step += 17
-            }
+
+            step += 2 * 17
+            target.x += step;
             i++;
         });
 
+        step = 0;
+        i = 0
         this.targets.children.iterate(function (target) {
             target.setVelocityY(Phaser.Math.Between(20, 60));
             target.setCollideWorldBounds(true);
             target.setBounce(1);
             target.initExplosionEvent()
+            target.x += step;
+            if (i == 1 || i == 3 || i == 5)
+            {
+                step += 17
+            }
+            i++;
         });
 
         this.anims.create({
