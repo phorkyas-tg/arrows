@@ -63,6 +63,9 @@ class Level extends Phaser.Scene
 
         // create laser groups
         this.lasers = new Lasers(this);
+        this.lasers.children.iterate(function (laser) {
+           laser.setOrigin(0, 0);
+        });
 
         // add collider for lasers and targets
         this.physics.add.overlap(this.lasers, this.targets, this.hitTarget, null, this);
@@ -313,7 +316,7 @@ class Level extends Phaser.Scene
 
         this.player.on('animationupdate', function(animation, frame) {
           if(animation.key === ANIM_SHOOT && frame.index === 4) {
-              this.lasers.fireLaser(this.player.x + 17, this.player.y - 2);
+              this.lasers.fireLaser(this.player.x + 17, this.player.y - 6);
           }
         }, this);
     }
@@ -462,6 +465,7 @@ class LevelOne extends Level
            target.setVelocityY(40);
            target.setCollideWorldBounds(true);
            target.setBounce(1);
+           target.setOrigin(0, 0);
            target.initExplosionEvent()
        });
 
@@ -492,6 +496,7 @@ class LevelTwo extends Level
            target.setVelocityY(Phaser.Math.Between(20, 60));
            target.setCollideWorldBounds(true);
            target.setBounce(1);
+           target.setOrigin(0, 0);
            target.initExplosionEvent()
        });
 
@@ -526,6 +531,7 @@ class LevelThree extends Level
             target.setVelocityY(Phaser.Math.Between(10, 15));
             target.setCollideWorldBounds(true);
             target.setBounce(1);
+            target.setOrigin(0, 0);
             target.initExplosionEvent();
 
             step += 2 * 17
@@ -540,6 +546,7 @@ class LevelThree extends Level
             target.setCollideWorldBounds(true);
             target.setBounce(1);
             target.initExplosionEvent()
+            target.setOrigin(0, 0);
             target.x += step;
             if (i == 1 || i == 3 || i == 5)
             {

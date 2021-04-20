@@ -27,8 +27,8 @@ class Laser extends Phaser.Physics.Arcade.Sprite
 
     getTip()
     {
-        var tipX = Math.ceil(this.x + this.width);
-        var tipY = Math.ceil(this.y + this.height / 2);
+        var tipX = this.x + this.width;
+        var tipY = this.y + (this.height / 2);
         return [tipX, tipY]
     }
 }

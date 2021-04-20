@@ -14,7 +14,12 @@ class Ball extends Phaser.Physics.Arcade.Sprite
 
     hit(tipX, tipY)
     {
-        if (tipX > this.x && !this.isHit){
+        if (tipX < (this.x + this.width/2) &&
+                tipX > (this.x + 3) &&
+                tipY > (this.y + 1) &&
+                tipY < (this.y + this.height - 1)  &&
+                !this.isHit)
+        {
             this.setVelocityY(0);
             this.isHit = true;
             this.anims.play(ANIM_BALL_EXPLOSION);
@@ -54,7 +59,12 @@ class EnemyBall extends Phaser.Physics.Arcade.Sprite
 
     hit(tipX, tipY)
     {
-        if (tipX > this.x && !this.isHit){
+        if (tipX < (this.x + this.width/2) &&
+                tipX > (this.x + 3) &&
+                tipY > (this.y + 1) &&
+                tipY < (this.y + this.height - 1)  &&
+                !this.isHit)
+        {
             this.setVelocityY(0);
             this.isHit = true;
             this.anims.play(ANIM_ENEMY_BALL_EXPLOSION);
@@ -92,7 +102,7 @@ class Balls extends Phaser.Physics.Arcade.Group
             active: true,
             visible: true,
             classType: Ball,
-            setXY: { x: CANVAS_WIDTH - 180, y: CANVAS_HEIGHT - 100, stepX: 17 }
+            setXY: { x: CANVAS_WIDTH - 190, y: CANVAS_HEIGHT - 100, stepX: 17 }
         });
     }
 
@@ -132,7 +142,7 @@ class EnemyBalls extends Phaser.Physics.Arcade.Group
             active: true,
             visible: true,
             classType: EnemyBall,
-            setXY: { x: CANVAS_WIDTH - 180, y: CANVAS_HEIGHT - 50, stepX: 17 }
+            setXY: { x: CANVAS_WIDTH - 190, y: CANVAS_HEIGHT - 50, stepX: 17 }
         });
     }
 }
