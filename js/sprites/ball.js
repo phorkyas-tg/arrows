@@ -39,6 +39,11 @@ class Ball extends Phaser.Physics.Arcade.Sprite
         return 5;
     }
 
+    getEnergyDrain()
+    {
+        return 0;
+    }
+
     initExplosionEvent()
     {
         this.on('animationcomplete', function(animation, frame) {
@@ -59,6 +64,11 @@ class EnemyBall extends Ball
     playExplosionAnim()
     {
         this.anims.play(ANIM_ENEMY_BALL_EXPLOSION);
+    }
+
+    getBaseScore()
+    {
+        return 0;
     }
 
     getEnergyDrain()
