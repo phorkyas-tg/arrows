@@ -1,10 +1,11 @@
 class Ball extends Phaser.Physics.Arcade.Sprite
 {
-    constructor (scene, x, y)
+    constructor (scene, x, y, key="ball")
     {
-        super(scene, x, y, 'ball');
-
+        super(scene, x, y, key);
         this.isHit = false
+
+        this.radius = this.width / 2
     }
 
     preUpdate (time, delta)
@@ -22,10 +23,15 @@ class Ball extends Phaser.Physics.Arcade.Sprite
         {
             this.setVelocityY(0);
             this.isHit = true;
-            this.anims.play(ANIM_BALL_EXPLOSION);
+            this.playExplosionAnim();
             return true;
         }
         return false;
+    }
+
+    playExplosionAnim()
+    {
+        this.anims.play(ANIM_BALL_EXPLOSION);
     }
 
     getBaseScore()
@@ -43,34 +49,16 @@ class Ball extends Phaser.Physics.Arcade.Sprite
     }
 }
 
-class EnemyBall extends Phaser.Physics.Arcade.Sprite
+class EnemyBall extends Ball
 {
-    constructor (scene, x, y)
+    constructor (scene, x, y, key=enemyBall)
     {
         super(scene, x, y, 'enemyBall');
-
-        this.isHit = false
     }
 
-    preUpdate (time, delta)
+    playExplosionAnim()
     {
-        super.preUpdate(time, delta);
-    }
-
-    hit(tipX, tipY)
-    {
-        if (tipX < (this.x + this.width/2) &&
-                tipX > (this.x + 3) &&
-                tipY > (this.y + 1) &&
-                tipY < (this.y + this.height - 1)  &&
-                !this.isHit)
-        {
-            this.setVelocityY(0);
-            this.isHit = true;
-            this.anims.play(ANIM_ENEMY_BALL_EXPLOSION);
-            return true;
-        }
-        return false;
+        this.anims.play(ANIM_ENEMY_BALL_EXPLOSION);
     }
 
     getEnergyDrain()
@@ -90,7 +78,7 @@ class EnemyBall extends Phaser.Physics.Arcade.Sprite
 
 class Balls extends Phaser.Physics.Arcade.Group
 {
-    constructor (scene, ballCount=10)
+    constructor (scene, key="ball", cl=Ball, animKey=ANIM_BALL_EXPLOSION, ballCount=10, minVelocity=40, maxVelocity=40)
     {
         super(scene.physics.world, scene);
 
@@ -98,11 +86,51 @@ class Balls extends Phaser.Physics.Arcade.Group
 
         this.createMultiple({
             frameQuantity: this.ballCount,
-            key: 'ball',
+            key: key,
             active: true,
             visible: true,
-            classType: Ball,
+            classType: cl,
             setXY: { x: CANVAS_WIDTH - 190, y: CANVAS_HEIGHT - 100, stepX: 17 }
+        });
+
+        this.children.iterate(function (target) {
+           target.setVelocityY(Phaser.Math.Between(minVelocity, maxVelocity));
+           target.setCollideWorldBounds(true);
+           target.setBounce(1);
+           target.setOrigin(0, 0);
+           target.initExplosionEvent()
+        });
+
+        scene.anims.create({
+           key: animKey,
+           frames: scene.anims.generateFrameNumbers(key, { start: 1, end: 6 }),
+           frameRate: 10,
+           repeat: 0,
+        });
+    }
+
+    distributeAAB()
+    {
+        let step = 0;
+        let i = 0
+        this.children.iterate(function (target) {
+            if (i % 2 == 0 && i != 0)
+            {
+                step += target.width + 1
+            }
+            target.x += step;
+            i++;
+        });
+    }
+
+    distributeBBA()
+    {
+        let step = 0;
+        let i = 0
+        this.children.iterate(function (target) {
+            step += 2 * (target.width + 1)
+            target.x += step;
+            i++;
         });
     }
 
@@ -125,24 +153,5 @@ class Balls extends Phaser.Physics.Arcade.Group
             return true
         }
         return false
-    }
-}
-
-class EnemyBalls extends Phaser.Physics.Arcade.Group
-{
-    constructor (scene, ballCount=3)
-    {
-        super(scene.physics.world, scene);
-
-        this.ballCount = ballCount;
-
-        this.createMultiple({
-            frameQuantity: this.ballCount,
-            key: 'enemyBall',
-            active: true,
-            visible: true,
-            classType: EnemyBall,
-            setXY: { x: CANVAS_WIDTH - 190, y: CANVAS_HEIGHT - 50, stepX: 17 }
-        });
     }
 }

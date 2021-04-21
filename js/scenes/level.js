@@ -461,21 +461,6 @@ class LevelOne extends Level
     {
        // create target group
        this.targets = new Balls(this)
-       this.targets.children.iterate(function (target) {
-           target.setVelocityY(40);
-           target.setCollideWorldBounds(true);
-           target.setBounce(1);
-           target.setOrigin(0, 0);
-           target.initExplosionEvent()
-       });
-
-       this.anims.create({
-           key: ANIM_BALL_EXPLOSION,
-           frames: this.anims.generateFrameNumbers('ball', { start: 1, end: 6 }),
-           frameRate: 10,
-           repeat: 0,
-       });
-
     }
 }
 
@@ -491,21 +476,7 @@ class LevelTwo extends Level
     createTargets()
     {
        // create target group
-       this.targets = new Balls(this)
-       this.targets.children.iterate(function (target) {
-           target.setVelocityY(Phaser.Math.Between(20, 60));
-           target.setCollideWorldBounds(true);
-           target.setBounce(1);
-           target.setOrigin(0, 0);
-           target.initExplosionEvent()
-       });
-
-       this.anims.create({
-          key: ANIM_BALL_EXPLOSION,
-          frames: this.anims.generateFrameNumbers('ball', { start: 1, end: 6 }),
-          frameRate: 10,
-          repeat: 0,
-       });
+       this.targets = new Balls(this, "ball", Ball, ANIM_BALL_EXPLOSION, 10, 20, 60)
     }
 }
 
@@ -522,51 +493,10 @@ class LevelThree extends Level
     createTargets()
     {
         // create target group
-        this.targets = new Balls(this, 7)
-        this.enemys = new EnemyBalls(this, 3)
+        this.targets = new Balls(this, "ball", Ball, ANIM_BALL_EXPLOSION, 7, 20, 60)
+        this.enemys = new Balls(this, "enemyBall", EnemyBall, ANIM_ENEMY_BALL_EXPLOSION, 3, 10, 15)
 
-        let step = 0;
-        let i = 0;
-        this.enemys.children.iterate(function (target) {
-            target.setVelocityY(Phaser.Math.Between(10, 15));
-            target.setCollideWorldBounds(true);
-            target.setBounce(1);
-            target.setOrigin(0, 0);
-            target.initExplosionEvent();
-
-            step += 2 * 17
-            target.x += step;
-            i++;
-        });
-
-        step = 0;
-        i = 0
-        this.targets.children.iterate(function (target) {
-            target.setVelocityY(Phaser.Math.Between(20, 60));
-            target.setCollideWorldBounds(true);
-            target.setBounce(1);
-            target.initExplosionEvent()
-            target.setOrigin(0, 0);
-            target.x += step;
-            if (i == 1 || i == 3 || i == 5)
-            {
-                step += 17
-            }
-            i++;
-        });
-
-        this.anims.create({
-            key: ANIM_BALL_EXPLOSION,
-            frames: this.anims.generateFrameNumbers('ball', { start: 1, end: 6 }),
-            frameRate: 10,
-            repeat: 0,
-        });
-
-        this.anims.create({
-            key: ANIM_ENEMY_BALL_EXPLOSION,
-            frames: this.anims.generateFrameNumbers('enemyBall', { start: 1, end: 6 }),
-            frameRate: 10,
-            repeat: 0,
-        });
+        this.targets.distributeAAB()
+        this.enemys.distributeBBA()
     }
 }
