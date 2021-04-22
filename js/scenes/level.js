@@ -460,7 +460,7 @@ class LevelOne extends Level
     createTargets()
     {
        // create target group
-       this.targets = new Balls(this)
+       this.targets = new Balls(this, "ball", Ball, ANIM_BALL_EXPLOSION, 10, 40, 40)
     }
 }
 

@@ -15,15 +15,24 @@ class Ball extends Phaser.Physics.Arcade.Sprite
 
     hit(tipX, tipY)
     {
-        if (tipX < (this.x + this.width/2) &&
-                tipX > (this.x + 3) &&
-                tipY > (this.y + 1) &&
-                tipY < (this.y + this.height - 1)  &&
-                !this.isHit)
+        if (this.inHitBox(tipX, tipY) && this.isHit == false)
         {
             this.setVelocityY(0);
             this.isHit = true;
             this.playExplosionAnim();
+            return true;
+        }
+        return false;
+    }
+
+    inHitBox(x, y)
+    {
+        let centerX = this.x + this.width / 2;
+        let centerY = this.y + this.height / 2;
+
+        // check for round Hitbox r >= (x - xc)^2 + (y - yc)^2
+        if (Math.pow(this.radius, 2) >= Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2))
+        {
             return true;
         }
         return false;
