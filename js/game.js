@@ -16,9 +16,10 @@ const ANIM_SCORE_CLOCK_RUN = "score-clock-run"
 const CANVAS_WIDTH = 256
 const CANVAS_HEIGHT = 224
 
-var level1 = new LevelOne("Level1")
-var level2 = new LevelTwo("Level2")
-var level3 = new LevelThree("Level3")
+var level1 = new LevelOne("Level1");
+var level2 = new LevelTwo("Level2");
+var level3 = new LevelThree("Level3");
+var level4 = new LevelFour("Level4");
 
 var endScreen = new Phaser.Class({
     Extends: Phaser.Scene,
@@ -197,7 +198,7 @@ var config = {
             mode: Phaser.Scale.FIT,
             autoCenter: Phaser.Scale.CENTER_BOTH
     },
-    scene: [ startScreen, level1, level2, level3, endScreen, help]
+    scene: [ startScreen, level1, level2, level3, level4, endScreen, help]
 };
 
 var game = new Phaser.Game(config);

@@ -37,6 +37,7 @@ class Level extends Phaser.Scene
         this.load.spritesheet('energy', 'assets/sprites/4c_96_32_energy.png', { frameWidth: 96, frameHeight: 32 });
         this.load.spritesheet('ball', 'assets/sprites/4c_16_16_ball.png', { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet('enemyBall', 'assets/sprites/4c_16_16_green_ball.png', { frameWidth: 16, frameHeight: 16 });
+        this.load.image('disc', 'assets/sprites/4c_16_32_disc.png');
         this.load.spritesheet('laser', 'assets/sprites/4c_8_8_laser.png', { frameWidth: 8, frameHeight: 8 });
         this.load.spritesheet('portrait', 'assets/sprites/4c_32_32_portrait.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('score', 'assets/sprites/4c_55_32_score.png', { frameWidth: 55, frameHeight: 32 });
@@ -486,8 +487,7 @@ class LevelThree extends Level
     {
         this.setEnergyLevel(data.energyLevel, 7);
         this.initScore(data.score);
-        // ToDo set this to 3 if there is a level 4
-        this.levelNumber = 2;
+        this.levelNumber = 3;
     }
 
     createTargets()
@@ -498,5 +498,22 @@ class LevelThree extends Level
 
         this.targets.distributeAAB()
         this.enemys.distributeBBA()
+    }
+}
+
+class LevelFour extends Level
+{
+    init (data)
+    {
+        this.setEnergyLevel(data.energyLevel, 7);
+        this.initScore(data.score);
+        // ToDo set this to 4 if there is a level 5
+        this.levelNumber = 3;
+    }
+
+    createTargets()
+    {
+        // create target group
+        this.targets = new Discs(this, "disc", Disc, 1, 0, 0)
     }
 }
