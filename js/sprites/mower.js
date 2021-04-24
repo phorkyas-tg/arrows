@@ -15,8 +15,9 @@ class Mower extends Phaser.Physics.Arcade.Sprite
     {
         if (this.inHitBox(tipX, tipY) && this.isHit == false)
         {
-            this.setVelocityY(0);
+            this.setVelocityX(0);
             this.isHit = true;
+            this.disableBody(true, true);
             return true;
         }
         return false;
