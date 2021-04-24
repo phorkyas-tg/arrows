@@ -37,7 +37,7 @@ class Level extends Phaser.Scene
         this.load.spritesheet('energy', 'assets/sprites/4c_96_32_energy.png', { frameWidth: 96, frameHeight: 32 });
         this.load.spritesheet('ball', 'assets/sprites/4c_16_16_ball.png', { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet('enemyBall', 'assets/sprites/4c_16_16_green_ball.png', { frameWidth: 16, frameHeight: 16 });
-        this.load.image('disc', 'assets/sprites/4c_16_32_disc.png');
+        this.load.spritesheet('disc', 'assets/sprites/4c_16_32_disc.png', { frameWidth: 16, frameHeight: 32 });
         this.load.spritesheet('laser', 'assets/sprites/4c_8_8_laser.png', { frameWidth: 8, frameHeight: 8 });
         this.load.spritesheet('portrait', 'assets/sprites/4c_32_32_portrait.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('score', 'assets/sprites/4c_55_32_score.png', { frameWidth: 55, frameHeight: 32 });

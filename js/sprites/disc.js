@@ -17,6 +17,7 @@ class Disc extends Phaser.Physics.Arcade.Sprite
         {
             this.setVelocityY(0);
             this.isHit = true;
+            this.anims.play(ANIM_DISC_EXPLOSION);
             return true;
         }
         return false;
@@ -49,7 +50,11 @@ class Disc extends Phaser.Physics.Arcade.Sprite
 
     initExplosionEvent()
     {
-
+        this.on('animationcomplete', function(animation, frame) {
+           if(animation.key === ANIM_DISC_EXPLOSION) {
+               this.disableBody(true, true);
+           }
+       }, this);
     }
 }
 
@@ -75,6 +80,14 @@ class Discs extends Phaser.Physics.Arcade.Group
            target.setCollideWorldBounds(true);
            target.setBounce(1);
            target.setOrigin(0, 0);
+           target.initExplosionEvent();
+        });
+
+        scene.anims.create({
+           key: ANIM_DISC_EXPLOSION,
+           frames: scene.anims.generateFrameNumbers(key, { start: 1, end: 4 }),
+           frameRate: 10,
+           repeat: 0,
         });
     }
 

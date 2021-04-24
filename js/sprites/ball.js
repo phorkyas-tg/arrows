@@ -117,7 +117,7 @@ class Balls extends Phaser.Physics.Arcade.Group
            target.setCollideWorldBounds(true);
            target.setBounce(1);
            target.setOrigin(0, 0);
-           target.initExplosionEvent()
+           target.initExplosionEvent();
         });
 
         scene.anims.create({
