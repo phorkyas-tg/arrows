@@ -514,6 +514,6 @@ class LevelFour extends Level
     createTargets()
     {
         // create target group
-        this.targets = new Discs(this, "disc", Disc, 1, 0, 0)
+        this.targets = new Discs(this, "disc", Disc, 1, 40, 40)
     }
 }
