@@ -5,6 +5,7 @@ const ANIM_LASER = "laser-idle"
 const ANIM_BALL_EXPLOSION = "ball-explosion"
 const ANIM_ENEMY_BALL_EXPLOSION = "enemy-ball-explosion"
 const ANIM_DISC_EXPLOSION = "disc-explosion"
+const ANIM_MOWER_IDLE = "mower-idle"
 const ANIM_PORTRAIT_IDLE = "portrait-idle"
 const ANIM_PORTRAIT_SHOOT = "portrait-shoot"
 const ANIM_PORTRAIT_HAPPY = "portrait-happy"
@@ -21,6 +22,7 @@ var level1 = new LevelOne("Level1");
 var level2 = new LevelTwo("Level2");
 var level3 = new LevelThree("Level3");
 var level4 = new LevelFour("Level4");
+var level5 = new LevelFive("Level5");
 
 var endScreen = new Phaser.Class({
     Extends: Phaser.Scene,
@@ -199,7 +201,7 @@ var config = {
             mode: Phaser.Scale.FIT,
             autoCenter: Phaser.Scale.CENTER_BOTH
     },
-    scene: [ startScreen, level1, level2, level3, level4, endScreen, help]
+    scene: [ startScreen, level1, level2, level3, level4, level5, endScreen, help]
 };
 
 var game = new Phaser.Game(config);
