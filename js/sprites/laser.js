@@ -14,14 +14,20 @@ class Laser extends Phaser.Physics.Arcade.Sprite
         this.setVelocityX(80);
     }
 
+    deactivate()
+    {
+        this.body.reset(0, 0);
+        this.setActive(false);
+        this.setVisible(false);
+    }
+
     preUpdate (time, delta)
     {
         super.preUpdate(time, delta);
 
         if (this.x >= CANVAS_WIDTH - 32)
         {
-            this.setActive(false);
-            this.setVisible(false);
+            this.deactivate();
         }
     }
 

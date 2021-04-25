@@ -9,6 +9,23 @@ class Mower extends Phaser.Physics.Arcade.Sprite
     preUpdate (time, delta)
     {
         super.preUpdate(time, delta);
+        if (this.x <= -64)
+        {
+            this.disableBody(true, true);
+            this.isHit = true;
+        }
+    }
+
+    collide()
+    {
+        if (this.isHit == false)
+        {
+            this.setVelocityX(0);
+            this.isHit = true;
+            this.anims.play(ANIM_MOWER_EXPLOSION);
+            return true;
+        }
+        return false
     }
 
     hit(tipX, tipY)
@@ -17,7 +34,7 @@ class Mower extends Phaser.Physics.Arcade.Sprite
         {
             this.setVelocityX(0);
             this.isHit = true;
-            this.disableBody(true, true);
+            this.anims.play(ANIM_MOWER_EXPLOSION);
             return true;
         }
         return false;
@@ -35,12 +52,16 @@ class Mower extends Phaser.Physics.Arcade.Sprite
 
     getEnergyDrain()
     {
-        return 0;
+        return 5;
     }
 
     initExplosionEvent()
     {
-
+        this.on('animationcomplete', function(animation, frame) {
+           if(animation.key === ANIM_MOWER_EXPLOSION) {
+               this.disableBody(true, true);
+           }
+       }, this);
     }
 }
 
@@ -57,6 +78,13 @@ class Mowers extends Phaser.Physics.Arcade.Group
            frames: scene.anims.generateFrameNumbers(key, { start: 0, end: 1 }),
            frameRate: 10,
            repeat: -1,
+        });
+
+        scene.anims.create({
+           key: ANIM_MOWER_EXPLOSION,
+           frames: scene.anims.generateFrameNumbers(key, { start: 2, end: 7 }),
+           frameRate: 10,
+           repeat: 0,
         });
 
         this.createMultiple({

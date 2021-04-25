@@ -20,6 +20,7 @@ class Level extends Phaser.Scene
         this.scoreBoard;
         this.clock;
         this.numbers;
+        this.deactivateLaserAfterHit;
 
         this.helpKey;
     }
@@ -52,7 +53,7 @@ class Level extends Phaser.Scene
         this.won = -1
 
         // set up score system
-        this.createScore()
+        this.createScore();
 
         // set border and world bound
         this.add.image(128, 112, 'border');
@@ -79,6 +80,9 @@ class Level extends Phaser.Scene
 
         // The player and its settings
         this.createPlayer()
+
+        // Add collider for target and player
+        this.physics.add.overlap(this.player, this.targets, this.collideWithTarget, null, this);
 
         // create portrait in upper left corner
         this.createPortrait()
@@ -346,6 +350,29 @@ class Level extends Phaser.Scene
 
             this.updateScore();
             this.updateComboMultiplier();
+
+            if (this.deactivateLaserAfterHit)
+            {
+                laser.deactivate();
+            }
+        }
+    }
+
+    collideWithTarget(player, target)
+    {
+        let collide = target.collide();
+        if (collide)
+        {
+            this.portrait.anims.play(ANIM_PORTRAIT_DEAD);
+            this.energyLevel -= target.getEnergyDrain();
+            if (this.energyLevel < 0)
+            {
+                this.gameOver()
+            }
+            else
+            {
+                this.energy.anims.play(ANIM_ENERGY + this.energyLevel);
+            }
         }
     }
 
@@ -454,6 +481,7 @@ class LevelOne extends Level
 {
     init (data)
     {
+        this.deactivateLaserAfterHit = false;
         this.setEnergyLevel(data.energyLevel, 5)
         this.initScore(data.score);
         this.levelNumber = 1;
@@ -470,6 +498,7 @@ class LevelTwo extends Level
 {
     init (data)
     {
+        this.deactivateLaserAfterHit = false;
         this.setEnergyLevel(data.energyLevel, 7);
         this.initScore(data.score);
         this.levelNumber = 2;
@@ -486,6 +515,7 @@ class LevelThree extends Level
 {
     init (data)
     {
+        this.deactivateLaserAfterHit = false;
         this.setEnergyLevel(data.energyLevel, 7);
         this.initScore(data.score);
         this.levelNumber = 3;
@@ -506,6 +536,7 @@ class LevelFour extends Level
 {
     init (data)
     {
+        this.deactivateLaserAfterHit = false;
         this.setEnergyLevel(data.energyLevel, 7);
         this.initScore(data.score);
         this.levelNumber = 4;
@@ -522,6 +553,7 @@ class LevelFive extends Level
 {
     init (data)
     {
+        this.deactivateLaserAfterHit = true;
         this.setEnergyLevel(data.energyLevel, 7);
         this.initScore(data.score);
         // ToDo set this to 5 if there is a level 6
@@ -531,6 +563,6 @@ class LevelFive extends Level
     createTargets()
     {
         // create target group
-        this.targets = new Mowers(this, "mower", Mower, 20, 30, 30)
+        this.targets = new Mowers(this, "mower", Mower, 25, 100, 100)
     }
 }

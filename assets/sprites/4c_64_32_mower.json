@@ -14,6 +14,54 @@
     "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 32 },
     "sourceSize": { "w": 64, "h": 32 },
     "duration": 100
+   },
+   "4c_64_32_mower 2.aseprite": {
+    "frame": { "x": 128, "y": 0, "w": 64, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 32 },
+    "sourceSize": { "w": 64, "h": 32 },
+    "duration": 100
+   },
+   "4c_64_32_mower 3.aseprite": {
+    "frame": { "x": 192, "y": 0, "w": 64, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 32 },
+    "sourceSize": { "w": 64, "h": 32 },
+    "duration": 100
+   },
+   "4c_64_32_mower 4.aseprite": {
+    "frame": { "x": 256, "y": 0, "w": 64, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 32 },
+    "sourceSize": { "w": 64, "h": 32 },
+    "duration": 100
+   },
+   "4c_64_32_mower 5.aseprite": {
+    "frame": { "x": 320, "y": 0, "w": 64, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 32 },
+    "sourceSize": { "w": 64, "h": 32 },
+    "duration": 100
+   },
+   "4c_64_32_mower 6.aseprite": {
+    "frame": { "x": 384, "y": 0, "w": 64, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 32 },
+    "sourceSize": { "w": 64, "h": 32 },
+    "duration": 100
+   },
+   "4c_64_32_mower 7.aseprite": {
+    "frame": { "x": 448, "y": 0, "w": 64, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 32 },
+    "sourceSize": { "w": 64, "h": 32 },
+    "duration": 100
    }
  },
  "meta": {
@@ -21,14 +69,15 @@
   "version": "1.2.25-dev",
   "image": "4c_64_32_mower.png",
   "format": "RGBA8888",
-  "size": { "w": 128, "h": 32 },
+  "size": { "w": 512, "h": 32 },
   "scale": "1",
   "frameTags": [
   ],
   "layers": [
    { "name": "tire", "opacity": 255, "blendMode": "normal" },
    { "name": "mower", "opacity": 255, "blendMode": "normal" },
-   { "name": "eyes", "opacity": 255, "blendMode": "normal" }
+   { "name": "eyes", "opacity": 255, "blendMode": "normal" },
+   { "name": "explosion", "opacity": 255, "blendMode": "normal" }
   ],
   "slices": [
   ]
