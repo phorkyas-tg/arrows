@@ -556,13 +556,29 @@ class LevelFive extends Level
         this.deactivateLaserAfterHit = true;
         this.setEnergyLevel(data.energyLevel, 7);
         this.initScore(data.score);
-        // ToDo set this to 5 if there is a level 6
-        this.levelNumber = 4;
+        this.levelNumber = 5;
     }
 
     createTargets()
     {
         // create target group
         this.targets = new Mowers(this, "mower", Mower, 25, 100, 100)
+    }
+}
+
+class LevelSix extends Level
+{
+    init (data)
+    {
+        this.deactivateLaserAfterHit = false;
+        this.setEnergyLevel(data.energyLevel, 10);
+        this.initScore(data.score);
+        this.levelNumber = 5;
+    }
+
+    createTargets()
+    {
+        // create target group
+        this.targets = new Discs(this, "disc", Disc, 3, 30, 50)
     }
 }

@@ -39,8 +39,7 @@ ready to use python web server. Just run the main.py using python3.
   * level complete bonus
 
 * more levels
-  * lvl 6 target practice with 2 targets
-  * lvl 7 faster mowing robot from right to left that kills hero if they hit
+  * lvl 7 mowing robot from right to left that kills hero if they hit and have 2 lives
   * lvl 8 coffee machine shooting beans
   * ...
   

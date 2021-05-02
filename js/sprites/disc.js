@@ -72,7 +72,7 @@ class Discs extends Phaser.Physics.Arcade.Group
             active: true,
             visible: true,
             classType: cl,
-            setXY: { x: CANVAS_WIDTH - 50, y: CANVAS_HEIGHT - 100, stepX: -17 }
+            setXY: { x: CANVAS_WIDTH - 50, y: CANVAS_HEIGHT - 100, stepX: -17 * 3 }
         });
 
         this.children.iterate(function (target) {

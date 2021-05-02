@@ -24,6 +24,7 @@ var level2 = new LevelTwo("Level2");
 var level3 = new LevelThree("Level3");
 var level4 = new LevelFour("Level4");
 var level5 = new LevelFive("Level5");
+var level6 = new LevelSix("Level6");
 
 var endScreen = new Phaser.Class({
     Extends: Phaser.Scene,
@@ -202,7 +203,7 @@ var config = {
             mode: Phaser.Scale.FIT,
             autoCenter: Phaser.Scale.CENTER_BOTH
     },
-    scene: [ startScreen, level1, level2, level3, level4, level5, endScreen, help]
+    scene: [ startScreen, level1, level2, level3, level4, level5, level6, endScreen, help]
 };
 
 var game = new Phaser.Game(config);
